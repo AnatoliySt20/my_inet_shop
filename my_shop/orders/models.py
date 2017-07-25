@@ -43,6 +43,7 @@ class ProductInOrder(models.Model):
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
     def __str__(self):
         return "%s" % self.product.name
 
@@ -57,13 +58,11 @@ class ProductInOrder(models.Model):
 
         super(ProductInOrder, self).save(*args, **kwargs)
 
+
+
 def product_in_order_post_save(sender, instance, created, **kwargs):
-    order = instance.order
-    all_products_in_order = ProductInOrder.objects.filter(order=order, is_active=True)
-    order_total_price = 0
-    for item in all_products_in_order:
-        order_total_price += item.total_price
-    instance.order.total_price = order_total_price
+    all_products_in_order = ProductInOrder.objects.filter(order=instance.order, is_active=True)
+    instance.order.total_price = sum([item.total_price for item in all_products_in_order])
     instance.order.save(force_update=True)
 
 post_save.connect(product_in_order_post_save, sender=ProductInOrder)
