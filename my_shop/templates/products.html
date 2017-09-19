@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+{% block main %}
+{% for product in products %}
+<div style="background-color:{% cycle '#AAFFFF' '#FFAAFF' %}">
+
+    <p>Название</p>
+    <p><strong>{{product.name}}</strong></p>
+    <p>Цена: {{product.price}}</p>
+</div>
+{% empty %}
+<p>OOps! There are no products here!</p>
+{% endfor %}
+
+{% include 'paging.html' with objects=products %}
+{% endblock %}
+</body>
+</html>
